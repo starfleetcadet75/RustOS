@@ -1,0 +1,10 @@
+[package]
+name = "RustOS"
+version = "0.1.0"
+authors = ["starfleetcadet75 <starfleetcadet75@gmail.com>"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+rlibc = "1.0"
