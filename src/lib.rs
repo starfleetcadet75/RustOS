@@ -1,20 +1,26 @@
-#![feature(lang_items)]
-#![feature(const_fn)]
-#![feature(unique)]
 #![no_std]
-extern crate rlibc;
-extern crate volatile;
+
 extern crate spin;
-
+extern crate volatile;
 #[macro_use]
-mod vga_buffer;
+extern crate lazy_static;
+extern crate uart_16550;
+extern crate x86_64;
 
-#[no_mangle]
-pub extern fn rust_main() {
-    vga_buffer::clear_screen();
-    println!("Hello World{}", "!");
-    loop{}
+#[cfg(test)]
+extern crate array_init;
+#[cfg(test)]
+extern crate std;
+
+pub mod vga_buffer;
+pub mod serial;
+pub mod gdt;
+
+/// Uses a special QEMU device to gracefully exit with a status code.
+pub unsafe fn exit_qemu() {
+    use x86_64::instructions::port::Port;
+
+    let mut port = Port::<u32>::new(0xf4);
+    port.write(0);
 }
 
-#[lang = "eh_personality"] extern fn eh_personality() {}
-#[lang = "panic_fmt"] #[no_mangle] pub extern fn panic_fmt() -> ! {loop{}}
